@@ -41,6 +41,7 @@ class FileOperations:
             print(f"Проект сохранен в XML файл: {filename}")
         except Exception as e:
             raise FileOperationException("saving", filename) from e
+
     @staticmethod
     def load_project_json(editor: AudioEditor, filename: str):
         """Загрузить проект из файла JSON."""
@@ -59,6 +60,7 @@ class FileOperations:
 
         except Exception as e:
             raise FileOperationException("loading", filename) from e
+
     @staticmethod
     def load_project_xml(editor: AudioEditor, filename: str):
         """Загрузить проект из файла XML."""
