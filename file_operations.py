@@ -59,3 +59,25 @@ class FileOperations:
 
         except Exception as e:
             raise FileOperationException("loading", filename) from e
+    @staticmethod
+    def load_project_xml(editor: AudioEditor, filename: str):
+        """Загрузить проект из файла XML."""
+        try:
+            tree = ET.parse(filename)
+            root = tree.getroot()
+
+            editor.tracks = {}
+            # Загружаем все треки
+            for track_element in root.findall("tracks/track"):
+                track_id = int(track_element.attrib["id"])  # Чтение ID трека
+                title = track_element.text  # Название трека
+                duration = float(
+                    track_element.attrib.get("duration", 0)
+                )  # Извлекаем длительность
+                editor.tracks[track_id] = Track(
+                    track_id, title, duration
+                )  # Создаём объект Track
+
+            print(f"Проект загружен из XML файла: {filename}")
+        except Exception as e:
+            raise FileOperationException("loading", filename) from e
