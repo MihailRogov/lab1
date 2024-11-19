@@ -41,3 +41,21 @@ class FileOperations:
             print(f"Проект сохранен в XML файл: {filename}")
         except Exception as e:
             raise FileOperationException("saving", filename) from e
+    @staticmethod
+    def load_project_json(editor: AudioEditor, filename: str):
+        """Загрузить проект из файла JSON."""
+        try:
+            with open(filename, "r") as f:
+                data = json.load(f)
+
+            # Загружаем все треки
+            for track_id, track_data in data["tracks"].items():
+                # Добавляем трек в словарь editor.tracks
+                editor.tracks[int(track_id)] = Track(
+                    track_id, track_data["title"], track_data["duration"]
+                )
+
+                print(f"Проект загружен из JSON файла: {filename}")
+
+        except Exception as e:
+            raise FileOperationException("loading", filename) from e
