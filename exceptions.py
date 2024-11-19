@@ -12,6 +12,7 @@ class TrackNotFoundException(AudioEditorException):
         self.message = f"Трек с ID {track_id} не найден."
         super().__init__(self.message)
 
+
 class InvalidFormatException(AudioEditorException):
     """Ошибка, возникающая при попытке сохранить или загрузить проект в неподдерживаемом формате."""
 
@@ -19,6 +20,7 @@ class InvalidFormatException(AudioEditorException):
         self.format_type = format_type
         self.message = f"Invalid format: {format_type}."
         super().__init__(self.message)
+
 
 class FileOperationException(AudioEditorException):
     """Ошибка при сохранении или загрузке файлов."""
