@@ -9,7 +9,7 @@ class Track:
         self.title = title
         self.duration = duration
 
-    def __str__(self):
+    def __str__(self) ->str:
         """Строковое представление трека."""
         return f"Track {self.track_id}: {self.title} - {self.duration}s"
 
@@ -21,7 +21,7 @@ class AudioEditor:
         """Инициализация редактора с пустым набором треков."""
         self.tracks = {}
 
-    def add_track(self, track_id: int, title: str, duration: float):
+    def add_track(self, track_id: int, title: str, duration: float) -> None:
         """Добавить трек в редактор."""
         if track_id in self.tracks:
             raise ValueError(f"Трек с ID {track_id} уже существует.")
@@ -30,7 +30,7 @@ class AudioEditor:
             self.tracks[track_id] = track
             print(f"Трек добавлен: {track}")
 
-    def remove_track(self, track_id: int):
+    def remove_track(self, track_id: int) -> None:
         """Удалить трек из редактора по ID."""
         if track_id in self.tracks:
             del self.tracks[track_id]
@@ -38,7 +38,7 @@ class AudioEditor:
         else:
             raise TrackNotFoundException(track_id)
 
-    def apply_effect(self, effect_name: str, track_id: int):
+    def apply_effect(self, effect_name: str, track_id: int) -> None:
         """Применить эффект к треку (пока эффект не реализован)."""
         if track_id in self.tracks:
             print(f"Применение эффекта '{effect_name}' к треку с ID {track_id}.")
