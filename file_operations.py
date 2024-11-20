@@ -1,6 +1,6 @@
 import json
 import xml.etree.ElementTree as ET
-from exceptions import FileOperationException
+from exceptions import FileOperationException, InvalidFormatException
 from audio_editor_classes import AudioEditor, Track
 
 
@@ -10,6 +10,8 @@ class FileOperations:
     @staticmethod
     def save_project_json(editor: AudioEditor, filename: str):
         """Сохранить проект в файл JSON."""
+        if not filename.endswith(".json"):
+            raise InvalidFormatException("JSON")  # Проверяем расширение файла
         data = {
             "tracks": {
                 track_id: vars(track) for track_id, track in editor.tracks.items()
@@ -25,6 +27,8 @@ class FileOperations:
     @staticmethod
     def save_project_xml(editor: AudioEditor, filename: str):
         """Сохранить проект в файл XML."""
+        if not filename.endswith(".xml"):
+            raise InvalidFormatException("XML")  # Проверяем расширение файла
         root = ET.Element("project")
 
         tracks_element = ET.SubElement(root, "tracks")
