@@ -1,6 +1,10 @@
 from audio_editor_classes import AudioEditor, Track
 from file_operations import FileOperations
-from exceptions import TrackNotFoundException, FileOperationException, InvalidFormatException
+from exceptions import (
+    TrackNotFoundException,
+    FileOperationException,
+    InvalidFormatException,
+)
 
 
 def print_menu():
@@ -42,9 +46,8 @@ def main():
                 title = input("Введите название трека: ")
                 duration = float(input("Введите длительность трека (в секундах): "))
                 editor.add_track(track_id, title, duration)
-            except ValueError:
-                print("Ошибка: введены некорректные данные. Убедитесь, что ID и длительность — числа.")
-
+            except ValueError as e:
+                print(e)
 
         elif choice == "2":  # Удалить трек
             try:
@@ -70,7 +73,9 @@ def main():
             try:
                 FileOperations.save_project_json(editor, filename)
             except InvalidFormatException as e:
-                print(f"Ошибка: {e}")  # Выводим сообщение, если формат файла некорректен
+                print(
+                    f"Ошибка: {e}"
+                )  # Выводим сообщение, если формат файла некорректен
             except FileOperationException as e:
                 print(e)
 
