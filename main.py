@@ -1,6 +1,6 @@
 from audio_editor_classes import AudioEditor, Track
 from file_operations import FileOperations
-from exceptions import TrackNotFoundException, FileOperationException
+from exceptions import TrackNotFoundException, FileOperationException, InvalidFormatException
 
 
 def print_menu():
@@ -37,37 +37,49 @@ def main():
         choice = input("Введите ваш выбор: ")
 
         if choice == "1":  # Добавить трек
-            track_id = int(input("Введите ID трека: "))
-            title = input("Введите название трека: ")
-            duration = float(input("Введите длительность трека (в секундах): "))
-            editor.add_track(track_id, title, duration)
+            try:
+                track_id = int(input("Введите ID трека: "))
+                title = input("Введите название трека: ")
+                duration = float(input("Введите длительность трека (в секундах): "))
+                editor.add_track(track_id, title, duration)
+            except ValueError:
+                print("Ошибка: введены некорректные данные. Убедитесь, что ID и длительность — числа.")
+
 
         elif choice == "2":  # Удалить трек
-            track_id = int(input("Введите ID трека для удаления: "))
             try:
+                track_id = int(input("Введите ID трека для удаления: "))
                 editor.remove_track(track_id)
             except TrackNotFoundException as e:
                 print(e)
+            except ValueError:
+                print("Ошибка: ID трека должен быть числом.")
 
         elif choice == "3":  # Применить эффект
-            effect_name = input("Введите название эффекта: ")
-            track_id = int(input("Введите ID трека, к которому применить эффект: "))
             try:
+                effect_name = input("Введите название эффекта: ")
+                track_id = int(input("Введите ID трека, к которому применить эффект: "))
                 editor.apply_effect(effect_name, track_id)
             except TrackNotFoundException as e:
                 print(e)
+            except ValueError:
+                print("Ошибка: ID трека должен быть числом.")
 
-        elif choice == "4":  # Сохранить проект
+        elif choice == "4":  # Сохранить проект (JSON)
             filename = input("Введите имя файла для сохранения (JSON): ")
             try:
                 FileOperations.save_project_json(editor, filename)
+            except InvalidFormatException as e:
+                print(f"Ошибка: {e}")  # Выводим сообщение, если формат файла некорректен
             except FileOperationException as e:
                 print(e)
 
-        elif choice == "5":  # Сохранить проект
+        elif choice == "5":  # Сохранить проект (XML)
             filename = input("Введите имя файла для сохранения (XML): ")
             try:
                 FileOperations.save_project_xml(editor, filename)
+            except InvalidFormatException as e:
+                print(f"Ошибка: {e}")
             except FileOperationException as e:
                 print(e)
 
