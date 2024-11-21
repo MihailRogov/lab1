@@ -116,12 +116,12 @@ class AudioEffectChain:
         """Инициализация пустой цепочки эффектов."""
         self.effects = []
 
-    def add_effect(self, effect: 'Effect') -> None:
+    def add_effect(self, effect: Effect) -> None:
         """Добавить эффект в цепочку."""
         self.effects.append(effect)
         print(f"Эффект '{effect.name}' добавлен в цепочку.")
 
-    def remove_effect(self, effect: 'Effect') -> None:
+    def remove_effect(self, effect: Effect) -> None:
         """Удалить эффект из цепочки."""
         if effect in self.effects:
             self.effects.remove(effect)
@@ -129,7 +129,7 @@ class AudioEffectChain:
         else:
             print(f"Эффект '{effect.name}' не найден в цепочке.")
 
-    def apply(self, track: 'Track') -> None:
+    def apply(self, track: Track) -> None:
         """Применить все эффекты из цепочки к треку."""
         for effect in self.effects:
             effect.apply(track)
