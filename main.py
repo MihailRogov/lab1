@@ -1,4 +1,11 @@
-from audio_editor_classes import AudioEditor, Track
+from audio_editor_classes import (
+    AudioEditor,
+    Track,
+    Effect,
+    AudioEffectChain,
+    Playlist,
+    Mixer,
+)
 from file_operations import FileOperations
 from exceptions import (
     TrackNotFoundException,
@@ -12,13 +19,18 @@ def print_menu():
     print("\nМеню аудиоредактора:")
     print("1. Добавить трек")
     print("2. Удалить трек")
-    print("3. Применить эффект к треку")
+    print("3. Применить эффекты к треку")
     print("4. Сохранить проект (JSON)")
     print("5. Сохранить проект (XML)")
     print("6. Загрузить проект (JSON)")
     print("7. Загрузить проект (XML)")
     print("8. Просмотреть все треки")
-    print("9. Выйти")
+    print("9. Создать плейлист")
+    print("10. Добавить трек в плейлист")
+    print("11. Просмотреть плейлист")
+    print("12. Создать микс")
+
+    print("13. Выйти")
 
 
 def print_tracks(editor: AudioEditor):
@@ -35,6 +47,9 @@ def print_tracks(editor: AudioEditor):
 
 def main():
     editor = AudioEditor()
+    playlists = {}
+    mixer = Mixer()
+    effect_chain = AudioEffectChain()
 
     while True:
         print_menu()
@@ -58,11 +73,24 @@ def main():
             except ValueError:
                 print("Ошибка: ID трека должен быть числом.")
 
-        elif choice == "3":  # Применить эффект
+        elif choice == "3":  # Применить эффекты к треку
             try:
-                effect_name = input("Введите название эффекта: ")
-                track_id = int(input("Введите ID трека, к которому применить эффект: "))
-                editor.apply_effect(effect_name, track_id)
+                while True:
+                    effect_name = input(
+                        "Введите название эффекта (или 'end' для завершения): "
+                    )
+                    if effect_name.lower() == "end":
+                        break
+                    effect_chain.add_effect(
+                        Effect(effect_name, f"Описание эффекта {effect_name}")
+                    )
+                track_id = int(
+                    input("Введите ID трека для применения цепочки эффектов: ")
+                )
+                track = editor.tracks.get(track_id)
+                if not track:
+                    raise TrackNotFoundException(track_id)
+                effect_chain.apply(track)
             except TrackNotFoundException as e:
                 print(e)
             except ValueError:
@@ -105,7 +133,60 @@ def main():
         elif choice == "8":  # Просмотреть треки
             print_tracks(editor)
 
-        elif choice == "9":  # Выход
+        elif choice == "9":  # Создать плейлист
+            name = input("Введите название нового плейлиста: ")
+            if name in playlists:
+                print(f"Плейлист с именем '{name}' уже существует.")
+            else:
+                playlists[name] = Playlist(name)
+                print(f"Плейлист '{name}' создан.")
+
+        elif choice == "10":  # Добавить трек в плейлист
+            name = input("Введите название плейлиста: ")
+            if name not in playlists:
+                print(f"Плейлист '{name}' не найден.")
+            else:
+                try:
+                    track_id = int(input("Введите ID трека для добавления: "))
+                    track = editor.tracks.get(track_id)
+                    if not track:
+                        raise TrackNotFoundException(track_id)
+                    playlists[name].add_track(track)
+                except TrackNotFoundException as e:
+                    print(e)
+                except ValueError:
+                    print("Ошибка: ID трека должен быть числом.")
+
+        elif choice == "11":  # Просмотреть плейлист
+            name = input("Введите название плейлиста: ")
+            if name not in playlists:
+                print(f"Плейлист '{name}' не найден.")
+            else:
+                print(playlists[name])
+
+        elif choice == "12":  # Создать микс
+            try:
+                while True:
+                    track_id = int(
+                        input(
+                            "Введите ID трека для добавления в микс (или -1 для завершения): "
+                        )
+                    )
+                    if track_id == -1:
+                        break
+                    track = editor.tracks.get(track_id)
+                    if not track:
+                        raise TrackNotFoundException(track_id)
+                    mixer.add_track(track)
+                output_title = input("Введите название нового микса: ")
+                mixed_track = mixer.mix(output_title)
+                print(f"Создан новый микс: {mixed_track}")
+            except TrackNotFoundException as e:
+                print(e)
+            except ValueError:
+                print("Ошибка: ID трека должен быть числом.")
+
+        elif choice == "13":  # Выход
             print("Выход из программы.")
             break
         else:
