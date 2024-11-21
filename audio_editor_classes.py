@@ -44,3 +44,32 @@ class AudioEditor:
             print(f"Применение эффекта '{effect_name}' к треку с ID {track_id}.")
         else:
             raise TrackNotFoundException(track_id)
+
+class Playlist:
+    """Класс для управления плейлистами в аудиоредакторе."""
+
+    def __init__(self, name: str):
+        """Инициализация плейлиста с названием."""
+        self.name = name
+        self.tracks = []
+
+    def add_track(self, track: Track) -> None:
+        """Добавить трек в плейлист."""
+        if track in self.tracks:
+            print(f"Трек '{track.title}' уже находится в плейлисте '{self.name}'.")
+        else:
+            self.tracks.append(track)
+            print(f"Трек '{track.title}' добавлен в плейлист '{self.name}'.")
+
+    def remove_track(self, track: Track) -> None:
+        """Удалить трек из плейлиста."""
+        if track in self.tracks:
+            self.tracks.remove(track)
+            print(f"Трек '{track.title}' удален из плейлиста '{self.name}'.")
+        else:
+            print(f"Трек '{track.title}' не найден в плейлисте '{self.name}'.")
+
+    def __str__(self) -> str:
+        """Строковое представление плейлиста."""
+        track_list = '\n'.join([str(track) for track in self.tracks])
+        return f"Плейлист '{self.name}':\n{track_list}"
