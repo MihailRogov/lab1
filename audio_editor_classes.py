@@ -38,12 +38,6 @@ class AudioEditor:
         else:
             raise TrackNotFoundException(track_id)
 
-    def apply_effect(self, effect_name: str, track_id: int) -> None:
-        """Применить эффект к треку (пока эффект не реализован)."""
-        if track_id in self.tracks:
-            print(f"Применение эффекта '{effect_name}' к треку с ID {track_id}.")
-        else:
-            raise TrackNotFoundException(track_id)
 
 class Playlist:
     """Класс для управления плейлистами в аудиоредакторе."""
@@ -102,3 +96,41 @@ class Mixer:
         total_duration = sum(track.duration for track in self.tracks)
         print(f"Создан микс '{output_title}' из {len(self.tracks)} треков, длительность: {total_duration} секунд.")
         return Track(track_id=-1, title=output_title, duration=total_duration)
+    
+class Effect:
+    """Класс для представления эффекта, который можно применить к треку."""
+
+    def __init__(self, name: str, description: str):
+        """Инициализация эффекта с именем и описанием."""
+        self.name = name
+        self.description = description
+
+    def apply(self, track: Track) -> None:
+        """Применить эффект к треку (базовая реализация)."""
+        print(f"Эффект '{self.name}' применен к треку: {track.title}.")
+
+class AudioEffectChain:
+    """Класс для управления цепочкой аудиоэффектов."""
+
+    def __init__(self):
+        """Инициализация пустой цепочки эффектов."""
+        self.effects = []
+
+    def add_effect(self, effect: 'Effect') -> None:
+        """Добавить эффект в цепочку."""
+        self.effects.append(effect)
+        print(f"Эффект '{effect.name}' добавлен в цепочку.")
+
+    def remove_effect(self, effect: 'Effect') -> None:
+        """Удалить эффект из цепочки."""
+        if effect in self.effects:
+            self.effects.remove(effect)
+            print(f"Эффект '{effect.name}' удален из цепочки.")
+        else:
+            print(f"Эффект '{effect.name}' не найден в цепочке.")
+
+    def apply(self, track: 'Track') -> None:
+        """Применить все эффекты из цепочки к треку."""
+        for effect in self.effects:
+            effect.apply(track)
+        print(f"Все эффекты из цепочки применены к треку '{track.title}'.")
