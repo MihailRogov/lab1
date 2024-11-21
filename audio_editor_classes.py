@@ -67,9 +67,38 @@ class Playlist:
             self.tracks.remove(track)
             print(f"Трек '{track.title}' удален из плейлиста '{self.name}'.")
         else:
-            print(f"Трек '{track.title}' не найден в плейлисте '{self.name}'.")
+            raise TrackNotFoundException(track.track_id)
 
     def __str__(self) -> str:
         """Строковое представление плейлиста."""
         track_list = '\n'.join([str(track) for track in self.tracks])
         return f"Плейлист '{self.name}':\n{track_list}"
+
+
+class Mixer:
+    """Класс для сведения треков в аудиомикс."""
+
+    def __init__(self):
+        """Инициализация миксера с пустым набором треков."""
+        self.tracks = []
+
+    def add_track(self, track: Track) -> None:
+        """Добавить трек в микс."""
+        self.tracks.append(track)
+        print(f"Трек '{track.title}' добавлен в микс.")
+
+    def remove_track(self, track: Track) -> None:
+        """Удалить трек из микса."""
+        if track in self.tracks:
+            self.tracks.remove(track)
+            print(f"Трек '{track.title}' удален из микса.")
+        else:
+            print(f"Трек '{track.title}' не найден в миксе.")
+
+    def mix(self, output_title: str) -> Track:
+        """Создать новый трек из смешанных треков."""
+        if not self.tracks:
+            raise TrackNotFoundException("В миксе нет треков.")
+        total_duration = sum(track.duration for track in self.tracks)
+        print(f"Создан микс '{output_title}' из {len(self.tracks)} треков, длительность: {total_duration} секунд.")
+        return Track(track_id=-1, title=output_title, duration=total_duration)
