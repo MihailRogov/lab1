@@ -106,7 +106,7 @@ class Effect:
         self.description = description
 
     def apply(self, track: Track) -> None:
-        """Применить эффект к треку (базовая реализация)."""
+        """Применить эффект к треку."""
         print(f"Эффект '{self.name}' применен к треку: {track.title}.")
 
 class AudioEffectChain:
